@@ -30,13 +30,15 @@ class RedisRateLimiter {
 			$data = $this->connection->hGetAll('count:' . $hash);
 			$counters = array();
 
+			$total = 0;
 			foreach ($data as $key => $value) {
 				$counters[] = array(intval($key), intval($value));
+				$total++;
 			}
 
 			ksort($counters);
 
-			$latest_counter = $counters[count($counters) - 1];
+			$latest_counter = $counters[$total - 1];
 			if ($latest_counter[1] >= $limit) {
 				return FALSE;
 			}
